@@ -38,7 +38,7 @@ async function run() {
       const result = await Products.insertOne(product);
       res.send(result);
     });
-    //! Edir Product
+    //! Edit Product
     //todo GET
     app.get("/product/edit/:id", async (req, res) => {
       const id = req.params.id;
@@ -73,6 +73,14 @@ async function run() {
       const query = { brandName: brand };
       const target = Products.find(query);
       const result = await target.toArray();
+      res.send(result);
+    });
+
+    //! Details Product
+    app.get("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const target = { _id: new ObjectId(id) };
+      const result = await Products.findOne(target);
       res.send(result);
     });
   } finally {
