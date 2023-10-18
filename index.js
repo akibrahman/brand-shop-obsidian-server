@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -38,6 +38,35 @@ async function run() {
       const result = await Products.insertOne(product);
       res.send(result);
     });
+    //! Edir Product
+    //todo GET
+    app.get("/product/edit/:id", async (req, res) => {
+      const id = req.params.id;
+      const target = { _id: new ObjectId(id) };
+      const result = await Products.findOne(target);
+      res.send(result);
+    });
+    //todo PUT
+    app.put("/product/edit/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedProduct = req.body;
+      const target = { _id: new ObjectId(id) };
+      const option = { upsert: true };
+      const updateProduct = {
+        $set: {
+          name: updatedProduct.name,
+          image: updatedProduct.image,
+          type: updatedProduct.type,
+          price: updatedProduct.price,
+          brandName: updatedProduct.brandName,
+          shortDes: updatedProduct.shortDes,
+          rating: updatedProduct.rating,
+        },
+      };
+      const result = await Products.updateOne(target, updateProduct, option);
+      res.send(result);
+    });
+
     //! Brand Wise Product
     app.get("/products/:brand", async (req, res) => {
       const brand = req.params.brand;
