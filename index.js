@@ -25,18 +25,26 @@ async function run() {
     console.log("You successfully connected to MongoDB!");
     //!DB Collection
     const Brands = client.db("BrandShopDB").collection("Brands");
+    const Products = client.db("BrandShopDB").collection("Products");
     //! Brands Port
     app.get("/brands", async (req, res) => {
-      const target = Brands.find();
+      const target = await Brands.find();
       const result = await target.toArray();
       res.send(result);
-      // https://i.ibb.co/F6xRtkg/nike.png
-      // https://i.ibb.co/9tqnTtc/zara.png
-      // https://i.ibb.co/RCrtnCR/adidas.png
-      // https://i.ibb.co/c3KCgDP/Banner.jpg
-      // https://i.ibb.co/3pvWSgw/gucci.png
-      // https://i.ibb.co/C03rGDm/h-m.png
-      // https://i.ibb.co/VxyrJd3/levis.png
+    });
+    //! Add Product
+    app.post("/product-add", async (req, res) => {
+      const product = req.body;
+      const result = await Products.insertOne(product);
+      res.send(result);
+    });
+    //! Brand Wise Product
+    app.get("/products/:brand", async (req, res) => {
+      const brand = req.params.brand;
+      const query = { brandName: brand };
+      const target = Products.find(query);
+      const result = await target.toArray();
+      res.send(result);
     });
   } finally {
   }
