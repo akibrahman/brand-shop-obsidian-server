@@ -93,10 +93,18 @@ async function run() {
       res.send(result);
     });
 
-    //! Show Carts
+    //! Show Cart's Products
     app.get("/cart/products", async (req, res) => {
       const target = CartProducts.find();
       const result = await target.toArray();
+      res.send(result);
+    });
+
+    //!Delete From Cart
+    app.delete("/cartDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const target = { _id: new ObjectId(id) };
+      const result = await CartProducts.deleteOne(target);
       res.send(result);
     });
   } finally {
