@@ -26,9 +26,10 @@ async function run() {
     //!DB Collection
     const Brands = client.db("BrandShopDB").collection("Brands");
     const Products = client.db("BrandShopDB").collection("Products");
+    const CartProducts = client.db("BrandShopDB").collection("Cart");
     //! Brands Port
     app.get("/brands", async (req, res) => {
-      const target = await Brands.find();
+      const target = Brands.find();
       const result = await target.toArray();
       res.send(result);
     });
@@ -38,6 +39,7 @@ async function run() {
       const result = await Products.insertOne(product);
       res.send(result);
     });
+
     //! Edit Product
     //todo GET
     app.get("/product/edit/:id", async (req, res) => {
@@ -81,6 +83,20 @@ async function run() {
       const id = req.params.id;
       const target = { _id: new ObjectId(id) };
       const result = await Products.findOne(target);
+      res.send(result);
+    });
+
+    //! Add To Cart
+    app.post("/addtocart", async (req, res) => {
+      const product = req.body;
+      const result = await CartProducts.insertOne(product);
+      res.send(result);
+    });
+
+    //! Show Carts
+    app.get("/cart/products", async (req, res) => {
+      const target = CartProducts.find();
+      const result = await target.toArray();
       res.send(result);
     });
   } finally {
